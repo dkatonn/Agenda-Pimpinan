@@ -169,7 +169,7 @@
 {{-- Js --}}
 <script>
 document.addEventListener('livewire:init', () => {
-    // Carousel untuk staff setiap 5 detik
+    // Carousel untuk staff
     setInterval(() => {
         Livewire.dispatch('next-staff');
     }, 5000);

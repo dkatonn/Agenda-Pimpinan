@@ -11,9 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // ... (middleware global lainnya jika ada)
-
-        // DAFTARKAN MIDDLEWARE ALIAS DI SINI (CUSTOM MIDDLEWARE)
+ 
         $middleware->alias([
             'role' => \App\Http\Middleware\IsRole::class,
         ]);

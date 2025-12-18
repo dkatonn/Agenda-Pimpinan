@@ -8,7 +8,6 @@ use Livewire\Attributes\On;
 
 class VideoController extends Component
 {
-    // Properti untuk menampung data video aktif
     public $activeVideo; 
     
     public function mount()
@@ -21,12 +20,10 @@ class VideoController extends Component
         $this->activeVideo = Video::getActive(); //
     }
 
-
     #[On('video-updated')]
     public function refreshVideo()
     {
         $this->loadActiveVideo(); 
-        // Livewire akan otomatis me-render ulang template (view)
     }
 
     public function render()

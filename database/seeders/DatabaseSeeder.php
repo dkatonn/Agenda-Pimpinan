@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Buat User Superadmin (Role: Superadmin)
+        // (Role: Superadmin)
         $superAdminUser = User::firstOrCreate(
             ['email' => 'superadmin@agenda.com'],
             [
@@ -26,20 +26,19 @@ class DatabaseSeeder extends Seeder
         );
         
         // 2. BUAT PROFILE MENGGUNAKAN DB FACADE (BYPASS ELOQUENT MODEL)
-        // Kita menggunakan updateOrInsert untuk meniru firstOrCreate
         DB::table('profiles')->updateOrInsert(
-            ['user_id' => $superAdminUser->id], // Kriteria Pencarian: user_id
+            ['user_id' => $superAdminUser->id], 
             [
                 'full_name' => 'Pimpinan Utama',
                 'category' => 'Pimpinan',
                 'role' => 'Superadmin',  
                 'photo_path' => null,
-                'created_at' => now(), // WAJIB: DB::table() butuh timestamps manual
-                'updated_at' => now(), // WAJIB: DB::table() butuh timestamps manual
+                'created_at' => now(), 
+                'updated_at' => now(), 
             ]
         );
 
-        // 3. Buat User Admin Biasa (Role: Admin)
+        // (Role: Admin)
         $adminUser = User::firstOrCreate(
             ['email' => 'admin@agenda.com'],
             [
@@ -51,14 +50,14 @@ class DatabaseSeeder extends Seeder
 
         // 4. BUAT PROFILE MENGGUNAKAN DB FACADE (BYPASS ELOQUENT MODEL)
         DB::table('profiles')->updateOrInsert(
-            ['user_id' => $adminUser->id], // Kriteria Pencarian: user_id
+            ['user_id' => $adminUser->id],
             [
                 'full_name' => 'Staff Agenda',
                 'category' => 'Staff', 
                 'role' => 'Admin',    
                 'photo_path' => null,
-                'created_at' => now(), // WAJIB: DB::table() butuh timestamps manual
-                'updated_at' => now(), // WAJIB: DB::table() butuh timestamps manual
+                'created_at' => now(), 
+                'updated_at' => now(), 
             ]
         );
     }

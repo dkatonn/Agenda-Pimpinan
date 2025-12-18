@@ -97,10 +97,6 @@ class RunningTextEdit extends Component
         session()->flash('success', 'Running text berhasil dihapus!');
         $this->dispatch('refresh-page');
     }
-
-    // ========================
-    // MULTI ACTIVE
-    // ========================
     public function toggleActive($id)
     {
         $item = RunningText::findOrFail($id);
@@ -112,10 +108,6 @@ class RunningTextEdit extends Component
         $this->loadItems();
         $this->dispatch('refresh-page');
     }
-
-    // ========================
-    // SINGLE ACTIVE
-    // ========================
     public function setSingleActive($id)
     {
         RunningText::where('is_active', true)->update(['is_active' => false]);

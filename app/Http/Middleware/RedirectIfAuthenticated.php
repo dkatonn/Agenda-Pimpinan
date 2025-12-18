@@ -17,7 +17,6 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                // Jika user sudah login, redirect ke dashboard
                 return redirect('/admin/dashboard');
             }
         }

@@ -9,7 +9,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('profiles', function (Blueprint $table) {
-            // Ubah category menjadi nullable dan pastikan tipe string
             $table->string('category')->nullable()->change();
         });
     }

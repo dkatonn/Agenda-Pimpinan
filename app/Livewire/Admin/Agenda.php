@@ -11,20 +11,14 @@ class Agenda extends Component
     use WithPagination;
 
     protected $paginationTheme = 'tailwind';
-
-    // Modal states
     public $showModal = false;
     public $editMode = false;
-
-    // Form fields
     public $agendaId;
     public $nama_kegiatan;
     public $tanggal;
     public $tempat;
     public $keterangan;
     public $disposisi;
-
-    // Delete state
     public $agendaIdToDelete = null;
 
     protected $rules = [
@@ -72,7 +66,7 @@ class Agenda extends Component
         session()->flash('success', 'Agenda berhasil ditambahkan.');
         $this->closeModal();
         
-        // Dispatch event untuk refresh halaman
+        // refresh halaman
         $this->dispatch('refresh-page');
     }
 
@@ -123,7 +117,7 @@ class Agenda extends Component
         session()->flash('success', 'Agenda berhasil dihapus.');
         $this->resetPage();
         
-        // Dispatch event untuk refresh halaman
+        // refresh halaman
         $this->dispatch('refresh-page');
     }
 

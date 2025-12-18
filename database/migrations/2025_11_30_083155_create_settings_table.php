@@ -15,8 +15,6 @@ return new class extends Migration
             $table->text('value')->nullable();
             $table->timestamps();
         });
-        
-        // Insert default data
         DB::table('settings')->insert([
             ['key' => 'profile_text', 'value' => 'Bapak/Ibu Pimpinan merupakan sosok yang berdedikasi tinggi...', 'created_at' => now(), 'updated_at' => now()],
             ['key' => 'running_text', 'value' => '🎉 Selamat datang di Sistem Informasi Agenda Pimpinan...', 'created_at' => now(), 'updated_at' => now()],

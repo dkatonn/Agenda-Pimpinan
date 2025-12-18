@@ -75,7 +75,6 @@
     </div>
 
     <script>
-        // Refresh component setiap 30 detik untuk update data
         setInterval(() => {
             Livewire.dispatch('refreshComponent');
         }, 30000);

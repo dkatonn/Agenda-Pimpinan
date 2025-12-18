@@ -15,17 +15,11 @@ class VideoDisplayTV extends Component
         $this->loadActiveVideo();
     }
 
-    // Mengambil data video yang is_active = true dari Model Video Anda
     public function loadActiveVideo()
     {
         $this->activeVideo = Video::getActive(); 
     }
 
-    /**
-     * PENTING: Mendengarkan event dari komponen admin
-     * Ketika event 'video-updated' dipancarkan, fungsi ini dieksekusi,
-     * dan komponen Livewire akan me-render ulang.
-     */
     #[On('video-updated')]
     public function refreshVideo()
     {

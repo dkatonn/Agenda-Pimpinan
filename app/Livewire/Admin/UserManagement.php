@@ -100,7 +100,6 @@ class UserManagement extends Component
         ]);
 
         if ($this->editingId) {
-            // ===== UPDATE =====
             $user = User::findOrFail($this->editingId);
 
             $user->update([
@@ -128,7 +127,6 @@ class UserManagement extends Component
 
             $this->successMessage = 'User berhasil diperbarui!';
         } else {
-            // ===== CREATE =====
             $autoName = strstr($this->email, '@', true);
 
             $user = User::create([
@@ -150,7 +148,7 @@ class UserManagement extends Component
         $this->loadItems();
         $this->showModal = false;
 
-        // efek sama seperti running text
+        // refresh
         $this->dispatch('refresh-page-delayed');
     }
 

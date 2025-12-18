@@ -34,19 +34,12 @@ class VideoManagement extends Component
 
     public function save()
     {
-        // =========================
-        // VALIDASI
-        // =========================
         $this->validate([
             'title' => 'required|string|max:255',
             'video_file' => $this->editingId
                 ? 'nullable|file|mimes:mp4,mov,avi|max:51200'
                 : 'required|file|mimes:mp4,mov,avi|max:51200',
         ]);
-
-        // =========================
-        // FILE HANDLING
-        // =========================
         $videoPath = $this->current_video_path;
 
         if ($this->video_file) {
@@ -56,10 +49,6 @@ class VideoManagement extends Component
 
             $videoPath = $this->video_file->store('videos', 'public');
         }
-
-        // =========================
-        // SIMPAN DATA
-        // =========================
         if ($this->editingId) {
             Video::findOrFail($this->editingId)->update([
                 'title'      => $this->title,
@@ -80,7 +69,7 @@ class VideoManagement extends Component
         $this->resetForm();
         $this->loadVideos();
 
-        // 🔥 INI KUNCINYA
+        // refresh page
         $this->dispatch('refresh-page');
     }
 

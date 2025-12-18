@@ -19,7 +19,7 @@ public function up(): void
 public function down(): void
 {
     Schema::table('agendas', function (Blueprint $table) {
-        $table->boolean('status')->default(false); // kembalikan jika rollback
+        $table->boolean('status')->default(false); 
     });
 }
 };

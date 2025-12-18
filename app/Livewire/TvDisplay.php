@@ -14,50 +14,37 @@ use Carbon\Carbon;
 #[Layout('layouts.tv')]
 class TvDisplay extends Component
 {
-    // ===== DATA =====
     public array $leaderProfiles = [];
     public array $staffProfiles = [];
     public array $agendas = [];
-
     public string $runningText = '';
     public ?string $videoUrl = null;
     public ?string $videoType = null;
-
-    // ===== STATE =====
     public int $agendaPage = 0;
     public int $agendaPerPage = 3;
-
     public int $currentStaffIndex = 0;
     public int $staffPerSlide = 4;
-
     public function mount()
     {
         $this->loadData();
     }
-
-    // ===== LOAD DATA =====
     public function loadData()
     {
-        // AGENDA
         $this->agendas = Agenda::whereDate('tanggal', '>=', Carbon::today())
             ->orderBy('tanggal')
             ->get()
             ->toArray();
 
-        // PIMPINAN
         $this->leaderProfiles = Profile::where('category', 'Pimpinan')
             ->select('id', 'full_name', 'photo_path')
             ->limit(2)
             ->get()
             ->toArray();
 
-        // STAFF
         $this->staffProfiles = Profile::where('category', 'Staff')
             ->select('id', 'full_name', 'photo_path')
             ->get()
             ->toArray();
-
-        // ✅ RUNNING TEXT (MULTI ACTIVE)
         $texts = RunningText::where('is_active', 1)
             ->orderBy('created_at')
             ->pluck('text')
@@ -66,12 +53,9 @@ class TvDisplay extends Component
         $this->runningText = count($texts)
             ? implode('   •   ', $texts)
             : 'Tidak ada informasi berjalan';
-
-        // VIDEO
         $this->loadActiveVideo();
     }
 
-    // ===== VIDEO =====
     private function loadActiveVideo()
     {
         $video = Video::where('is_active', 1)->first();
@@ -91,7 +75,6 @@ class TvDisplay extends Component
         }
     }
 
-    // ===== STAFF SLIDE =====
     #[On('next-staff')]
     public function nextStaff()
     {
@@ -111,7 +94,6 @@ class TvDisplay extends Component
         );
     }
 
-    // ===== AGENDA SLIDE =====
     #[On('next-agenda')]
     public function nextAgendaSlide()
     {

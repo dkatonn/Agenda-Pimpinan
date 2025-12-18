@@ -53,7 +53,7 @@ class ProfileSettings extends Component
             ->latest()
             ->get();
 
-        // cek apakah pimpinan sudah 2
+        // Validasi pimpinan 2
         $this->pimpinanPenuh = Profile::where('category', 'Pimpinan')->count() >= 2;
     }
 
@@ -79,7 +79,6 @@ class ProfileSettings extends Component
     {
         return Profile::where('category', 'Pimpinan')
             ->when($this->editingId, function ($query) {
-                // abaikan data yang sedang diedit
                 $query->where('id', '!=', $this->editingId);
             })
             ->count() >= 2;
@@ -89,7 +88,7 @@ class ProfileSettings extends Component
     {
         $this->validate();
 
-        // CEK LIMIT PIMPINAN
+        // validasi pimpinan 2 orang
         if ($this->category === 'Pimpinan' && $this->pimpinanSudahPenuh()) {
             $this->addError('category', 'Pimpinan maksimal hanya 2 orang.');
             return;

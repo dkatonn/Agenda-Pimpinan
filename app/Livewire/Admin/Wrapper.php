@@ -6,9 +6,7 @@ use Livewire\Component;
 
 class Wrapper extends Component
 {
-    public $activePage = 'dashboard'; // default
-
-    // PENTING: Gunakan array untuk listeners di Livewire 3
+    public $activePage = 'dashboard'; 
     protected $listeners = [
         'goToDashboard' => 'showDashboard',
         'goToAgenda' => 'showAgenda',
@@ -20,7 +18,6 @@ class Wrapper extends Component
 
     public function mount()
     {
-        // Set default page saat component pertama kali dimuat
         $this->activePage = 'dashboard';
     }
 

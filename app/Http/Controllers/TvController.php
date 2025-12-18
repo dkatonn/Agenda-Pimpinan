@@ -12,14 +12,14 @@ class TvController extends Controller
 {
     public function display()
     {
-        // ✅ RUNNING TEXT MULTI ACTIVE
+        // membuat running text
         $runningTexts = RunningText::where('is_active', 1)
             ->orderBy('created_at')
             ->pluck('text')
             ->toArray();
 
         return view('tv.display', [
-            // agenda hari ini & ke depan
+            // agenda
             'agendas' => Agenda::whereDate('tanggal', '>=', Carbon::today())
                 ->orderBy('tanggal')
                 ->get(),
@@ -32,7 +32,7 @@ class TvController extends Controller
             // staff
             'staffs' => Profile::where('category', 'Staff')->get(),
 
-            // ✅ running text (digabung)
+            // running text
             'runningText' => count($runningTexts)
                 ? implode('   •   ', $runningTexts)
                 : 'Tidak ada informasi ',

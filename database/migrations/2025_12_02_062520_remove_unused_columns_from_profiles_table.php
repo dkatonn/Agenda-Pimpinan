@@ -13,13 +13,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('profiles', function (Blueprint $table) {
-            // Hapus kolom yang tidak penting
             $table->dropColumn('company_name');
             $table->dropColumn('address');
             $table->dropColumn('phone');
             $table->dropColumn('email');
-            
-            // CATATAN: full_name dan position TIDAK dihapus karena ini yang Anda butuhkan.
         });
     }
 
@@ -30,13 +27,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('profiles', function (Blueprint $table) {
-            // Tambahkan kembali kolom yang dihapus saat rollback
             $table->string('company_name')->nullable();
             $table->string('address')->nullable();
-            $table->string('phone', 15)->nullable(); // Menyesuaikan tipe data asli
+            $table->string('phone', 15)->nullable(); 
             $table->string('email')->nullable();
             
-            // Catatan: Pastikan tipe data yang dikembalikan sama dengan tipe data sebelumnya.
         });
     }
 };

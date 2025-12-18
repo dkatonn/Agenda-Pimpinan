@@ -14,19 +14,11 @@ return new class extends Migration
         Schema::create('videos', function (Blueprint $table) {
             
             $table->id();
-            
-            // Kolom yang sudah ada
             $table->string('title');
-            
             $table->string('youtube_url')->nullable(); 
-            
             $table->boolean('is_active')->default(false);
-
             $table->text('description')->nullable(); 
-
             $table->string('video_path')->nullable(); 
-            // ---------------------------
-
             $table->timestamps();
         });
     }

@@ -55,7 +55,7 @@ class Dashboard extends Component
         $this->agendas = Agenda::with('profile:id,full_name')
             ->orderBy('tanggal', 'asc')
             ->limit(10)
-            ->get();  // ❌ Hapus ->toArray()
+            ->get();  
 
         // Semua video
         $this->videos = Video::orderBy('id','desc')->get();
@@ -63,21 +63,16 @@ class Dashboard extends Component
 
     public function setActiveVideo($videoId)
     {
-        // Nonaktifkan semua video
         Video::query()->update(['is_active' => 0]);
 
-        // Aktifkan video yang dipilih
+        // Mengakifkann video
         $video = Video::find($videoId);
 
         if ($video) {
             $video->is_active = 1;
             $video->save();
         }
-
-        // Reload data agar UI terupdate
         $this->loadData();
-
-        // Optional: tampilkan notifikasi
         session()->flash('message', 'Video berhasil diaktifkan.');
     }
 
