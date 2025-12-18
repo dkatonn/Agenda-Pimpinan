@@ -36,7 +36,7 @@ html, body {
 
 <div class="h-screen w-screen p-3 flex flex-col gap-3">
 
-{{--  HEADER  --}}
+{{-- HEADER --}}
 <h1 class="text-center text-2xl font-bold">
     <span class="bg-blue-900 text-yellow-300 px-6 py-2 rounded">
         AGENDA PIMPINAN
@@ -45,7 +45,7 @@ html, body {
 
 <div class="flex gap-3" style="height: 48vh;">
 
-{{--  PROFIL  --}}
+{{-- PROFIL --}}
 <div class="w-1/2 bg-white rounded p-2 flex flex-col">
     <div class="bg-blue-900 text-yellow-300 px-3 py-1 rounded text-sm font-semibold">
         Profil Pimpinan & Staff
@@ -58,27 +58,24 @@ html, body {
             @foreach($leaders as $leader)
             <div class="text-center">
                 <img class="w-32 h-32 mx-auto object-cover rounded shadow-md"
-                    src="{{ $leader->photo_path ? asset('storage/'.$leader->photo_path) : asset('images/default-user.png') }}">
+                     src="{{ $leader->photo_path ? asset('storage/'.$leader->photo_path) : asset('images/default-user.png') }}">
                 <p class="font-bold text-sm mt-2">{{ $leader->full_name }}</p>
             </div>
             @endforeach
         </div>
 
-        {{-- GARIS PEMISAH FULL WIDTH --}}
         <div class="border-t-2 border-black mb-3"></div>
 
-        {{-- STAFF CAROUSEL --}}
+        {{-- STAFF --}}
         <div class="flex-1 overflow-hidden">
-            @php
-                $staffChunks = $staffs->chunk(4);
-            @endphp
+            @php $staffChunks = $staffs->chunk(4); @endphp
 
             @foreach($staffChunks as $i => $chunk)
             <div class="slide grid grid-cols-4 gap-2 fade {{ $i === 0 ? 'active' : '' }}">
                 @foreach($chunk as $staff)
                 <div class="text-center">
                     <img class="w-20 h-20 mx-auto object-cover rounded shadow"
-                        src="{{ $staff->photo_path ? asset('storage/'.$staff->photo_path) : asset('images/default-user.png') }}">
+                         src="{{ $staff->photo_path ? asset('storage/'.$staff->photo_path) : asset('images/default-user.png') }}">
                     <p class="text-xs font-semibold mt-1">{{ $staff->full_name }}</p>
                 </div>
                 @endforeach
@@ -89,7 +86,7 @@ html, body {
     </div>
 </div>
 
-{{--  VIDEO  --}}
+{{-- VIDEO --}}
 <div class="w-1/2 bg-white rounded p-2 flex flex-col">
     <div class="bg-blue-900 text-yellow-300 px-3 py-1 rounded text-sm font-semibold">
         Video Kegiatan
@@ -98,9 +95,9 @@ html, body {
     <div class="flex-1 mt-3 bg-black rounded overflow-hidden">
         @if($video?->youtube_url)
             <iframe class="w-full h-full"
-                    src="{{ $video->youtube_url }}?autoplay=1&mute=1&loop=1"
-                    allow="autoplay"
-                    frameborder="0"></iframe>
+                src="{{ $video->youtube_url }}?autoplay=1&mute=1&loop=1"
+                allow="autoplay"
+                frameborder="0"></iframe>
         @elseif($video?->video_path)
             <video class="w-full h-full object-cover" autoplay muted loop playsinline>
                 <source src="{{ asset('storage/'.$video->video_path) }}" type="video/mp4">
@@ -111,28 +108,25 @@ html, body {
 
 </div>
 
-{{--  AGENDA  --}}
+{{-- AGENDA --}}
 <div class="bg-blue-900 text-yellow-300 px-3 py-1 rounded text-sm font-semibold">
     Agenda Kegiatan
 </div>
 
-<div class="bg-white rounded  overflow-hidden">
+<div class="bg-white rounded overflow-hidden">
 <table class="w-full table-fixed border-collapse text-sm">
 
 <thead class="bg-blue-600 text-white">
 <tr>
-    <th class="p-1.5 border border-gray-300 w-[12%] text-sm">Tanggal</th>
-    <th class="p-1.5 border border-gray-300 w-[30%] text-sm">Kegiatan</th>
-    <th class="p-1.5 border border-gray-300 w-[14%] text-sm">Disposisi</th>
-    <th class="p-1.5 border border-gray-300 w-[24%] text-sm">Keterangan</th>
-    <th class="p-1.5 border border-gray-300 w-[20%] text-sm">Tempat</th>
+    <th class="p-1.5 border border-gray-300 w-[14%]">Tanggal / Jam</th>
+    <th class="p-1.5 border border-gray-300 w-[30%]">Kegiatan</th>
+    <th class="p-1.5 border border-gray-300 w-[14%]">Disposisi</th>
+    <th class="p-1.5 border border-gray-300 w-[22%]">Keterangan</th>
+    <th class="p-1.5 border border-gray-300 w-[20%]">Tempat</th>
 </tr>
 </thead>
 
-@php
-    // agenda yang akan di tampilkan
-    $agendaChunks = $agendas->chunk(5);
-@endphp
+@php $agendaChunks = $agendas->chunk(5); @endphp
 
 @foreach($agendaChunks as $i => $chunk)
 <tbody class="agenda-slide {{ $i === 0 ? 'active' : '' }}">
@@ -141,52 +135,45 @@ html, body {
     $today = \Carbon\Carbon::today();
     $tomorrow = \Carbon\Carbon::tomorrow();
     $tanggal = \Carbon\Carbon::parse($agenda->tanggal)->startOfDay();
-    
-    $bgColor = 'bg-gray-200'; 
-    
-    if ($tanggal->equalTo($today)) {
-        $bgColor = 'bg-green-300'; 
-    } elseif ($tanggal->equalTo($tomorrow)) {
-        $bgColor = 'bg-yellow-300'; 
-    }
+
+    $bgColor = 'bg-gray-200';
+    if ($tanggal->equalTo($today)) $bgColor = 'bg-green-300';
+    elseif ($tanggal->equalTo($tomorrow)) $bgColor = 'bg-yellow-300';
 @endphp
-<tr class="border-b border-gray-300 {{ $bgColor }}">
-    <td class="p-1.5 border border-gray-300 text-center align-middle text-sm">
+
+<tr class="{{ $bgColor }}">
+    <td class="p-1.5 border border-gray-300 text-center font-semibold whitespace-nowrap">
         {{ $tanggal->format('d M Y') }}
+        {{ $agenda->jam ? substr($agenda->jam, 0, 5) : '' }}
     </td>
-    <td class="p-1.5 border border-gray-300 align-middle text-sm">{{ $agenda->nama_kegiatan }}</td>
-    <td class="p-1.5 border border-gray-300 text-center align-middle text-sm">{{ $agenda->disposisi ?? '-' }}</td>
-    <td class="p-1.5 border border-gray-300 align-middle text-sm">{{ $agenda->keterangan ?? '-' }}</td>
-    <td class="p-1.5 border border-gray-300 text-center align-middle text-sm">{{ $agenda->tempat ?? '-' }}</td>
+    <td class="p-1.5 border border-gray-300">{{ $agenda->nama_kegiatan }}</td>
+    <td class="p-1.5 border border-gray-300 text-center">{{ $agenda->disposisi ?? '-' }}</td>
+    <td class="p-1.5 border border-gray-300">{{ $agenda->keterangan ?? '-' }}</td>
+    <td class="p-1.5 border border-gray-300 text-center">{{ $agenda->tempat ?? '-' }}</td>
 </tr>
 @endforeach
 
-
-@for($j = count($chunk); $j < 4; $j++)
-<tr class="border-b border-gray-300 bg-white">
-    <td class="p-1.5 border border-gray-300 text-center align-middle text-sm" colspan="5">&nbsp;</td>
+@for($j = count($chunk); $j < 5; $j++)
+<tr>
+    <td colspan="5" class="p-1.5 border border-gray-300">&nbsp;</td>
 </tr>
 @endfor
-
 </tbody>
 @endforeach
 
 </table>
 </div>
 
-{{--  RUNNING TEXT  --}}
+{{-- RUNNING TEXT --}}
 <div class="bg-blue-900 text-white py-1.5 px-4 rounded overflow-hidden">
     <marquee scrollamount="6" class="text-sm">{{ $runningText }}</marquee>
 </div>
 
 </div>
 
-{{-- SCRIPT --}}
 <script>
-/* STAFF SLIDE 5 detik */
 let staffIndex = 0;
 const staffSlides = document.querySelectorAll('.slide');
-
 if (staffSlides.length > 0) {
     setInterval(() => {
         staffSlides[staffIndex].classList.remove('active');
@@ -195,10 +182,8 @@ if (staffSlides.length > 0) {
     }, 5000);
 }
 
-/* AGENDA SLIDE  10 dtk */
 let agendaIndex = 0;
 const agendaSlides = document.querySelectorAll('.agenda-slide');
-
 if (agendaSlides.length > 0) {
     setInterval(() => {
         agendaSlides[agendaIndex].classList.remove('active');

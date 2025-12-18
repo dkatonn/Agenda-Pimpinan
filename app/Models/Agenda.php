@@ -12,11 +12,17 @@ class Agenda extends Model
     protected $fillable = [
         'nama_kegiatan',
         'tanggal',
+        'jam',          
         'tempat',
         'keterangan',
         'disposisi',
         'user_id',
         'profile_id',
+    ];
+
+    protected $casts = [
+        'tanggal' => 'date',
+        'jam'     => 'string', 
     ];
 
     public function user()
@@ -28,6 +34,4 @@ class Agenda extends Model
     {
         return $this->belongsTo(Profile::class);
     }
-
-    
 }

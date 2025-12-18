@@ -2,56 +2,65 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\HomeController;
 use App\Http\Controllers\TvController;
 
 // =======================
 // PUBLIC ROUTES
 // =======================
-// Redirect root ke TV Display
+
+// Redirect root ke TV
 Route::get('/', function () {
     return redirect()->route('tv.display');
 });
 
-// TV Display - Halaman Utama
+// TV Display
 Route::get('/tv', [TvController::class, 'display'])
     ->name('tv.display');
 
 
 // =======================
-// AUTH ROUTES
+// AUTH ROUTES (LOGIN)
 // =======================
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])
         ->name('login');
-    
+
     Route::post('/login', [LoginController::class, 'login']);
 });
 
-// ==========================================================
-// PROTECTED ROUTES (ADMIN & SUPERADMIN)
-// ==========================================================
+
+// =======================
+// LOGOUT (HANDLE GET & POST)
+// =======================
+
+// POST = logout sebenarnya
+Route::post('/admin/logout', [LoginController::class, 'logout'])
+    ->middleware('auth')
+    ->name('admin.logout');
+
+// GET = cegah error MethodNotAllowed
+Route::get('/admin/logout', function () {
+    return redirect()->route('login');
+});
+
+
+// =======================
+// PROTECTED ADMIN AREA
+// =======================
 Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        // =======================
-        // Logout
-        // =======================
-        Route::post('/logout', [LoginController::class, 'logout'])
-            ->name('logout');
-
-        // =======================
         // Agenda (Admin & Superadmin)
-        // =======================
         Route::get('/agenda', \App\Livewire\Admin\Agenda::class)
             ->name('agenda');
 
-        // ======================================================
+        // =======================
         // SUPERADMIN ONLY
-        // ======================================================
+        // =======================
         Route::middleware(['role:superadmin'])->group(function () {
+
             Route::get('/dashboard', \App\Livewire\Dashboard::class)
                 ->name('dashboard');
 
@@ -67,5 +76,4 @@ Route::middleware(['auth'])
             Route::get('/users', \App\Livewire\Admin\UserManagement::class)
                 ->name('users');
         });
-
     });

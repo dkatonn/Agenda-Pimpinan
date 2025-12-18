@@ -23,7 +23,7 @@
             <thead class="bg-gray-700">
                 <tr>
                     <th class="px-4 py-3">Nama Kegiatan</th>
-                    <th class="px-4 py-3">Tanggal</th>
+                    <th class="px-4 py-3">Tanggal & Jam</th>
                     <th class="px-4 py-3">Tempat</th>
                     <th class="px-4 py-3">Disposisi</th>
                     <th class="px-4 py-3 text-center">Aksi</th>
@@ -33,7 +33,15 @@
                 @forelse ($agendas as $item)
                     <tr class="border-t border-gray-700">
                         <td class="px-4 py-3">{{ $item->nama_kegiatan }}</td>
-                        <td class="px-4 py-3">{{ $item->tanggal }}</td>
+
+                        <td class="px-4 py-3">
+                            {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}
+                            <br>
+                            <span class="text-sm text-gray-300">
+                                {{ \Carbon\Carbon::parse($item->jam)->format('H:i') }}
+                            </span>
+                        </td>
+
                         <td class="px-4 py-3">{{ $item->tempat }}</td>
                         <td class="px-4 py-3">{{ $item->disposisi ?? '-' }}</td>
 
@@ -65,7 +73,7 @@
         {{ $agendas->links() }}
     </div>
 
-    {{-- MODAL ADD/EDIT --}}
+    {{-- MODAL ADD / EDIT --}}
     @if ($showModal)
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
             <div class="bg-gray-800 w-full max-w-xl p-6 rounded-lg shadow-lg">
@@ -76,6 +84,7 @@
 
                 <div class="space-y-4">
 
+                    {{-- NAMA KEGIATAN --}}
                     <div>
                         <label class="block mb-1">Nama Kegiatan</label>
                         <input type="text" wire:model="nama_kegiatan"
@@ -85,6 +94,7 @@
                         @enderror
                     </div>
 
+                    {{-- TANGGAL --}}
                     <div>
                         <label class="block mb-1">Tanggal</label>
                         <input type="date" wire:model="tanggal"
@@ -94,6 +104,17 @@
                         @enderror
                     </div>
 
+                    {{-- JAM --}}
+                    <div>
+                        <label class="block mb-1">Jam</label>
+                        <input type="time" wire:model="jam"
+                            class="w-full p-2 rounded bg-gray-700 border border-gray-600">
+                        @error('jam')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- TEMPAT --}}
                     <div>
                         <label class="block mb-1">Tempat</label>
                         <input type="text" wire:model="tempat"
@@ -103,12 +124,14 @@
                         @enderror
                     </div>
 
+                    {{-- KETERANGAN --}}
                     <div>
                         <label class="block mb-1">Keterangan</label>
                         <textarea wire:model="keterangan" rows="3"
                             class="w-full p-2 rounded bg-gray-700 border border-gray-600"></textarea>
                     </div>
 
+                    {{-- DISPOSISI --}}
                     <div>
                         <label class="block mb-1">Disposisi</label>
                         <input type="text" wire:model="disposisi"
@@ -141,14 +164,14 @@
                 <p class="text-gray-300 mb-6">Apakah Anda yakin ingin menghapus agenda ini?</p>
 
                 <div class="flex justify-end gap-3">
-                    <button 
-                        wire:click="$set('agendaIdToDelete', null)" 
+                    <button
+                        wire:click="$set('agendaIdToDelete', null)"
                         class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded">
                         Batal
                     </button>
 
-                    <button 
-                        wire:click="deleteAgenda" 
+                    <button
+                        wire:click="deleteAgenda"
                         class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded">
                         Hapus
                     </button>

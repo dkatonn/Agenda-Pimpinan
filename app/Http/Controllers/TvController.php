@@ -12,33 +12,35 @@ class TvController extends Controller
 {
     public function display()
     {
-        // membuat running text
-        $runningTexts = RunningText::where('is_active', 1)
-            ->orderBy('created_at')
+        $today = Carbon::today();
+
+        $runningText = RunningText::where('is_active', 1)
+            ->orderBy('created_at', 'asc')
             ->pluck('text')
-            ->toArray();
+            ->implode('   •   ');
+
+        $agendas = Agenda::query()
+            ->whereDate('tanggal', '>=', $today)
+            ->orderByRaw("
+                tanggal ASC,
+                COALESCE(jam, '00:00:00') ASC
+            ")
+            ->get();
+
+        $leaders = Profile::where('category', 'Pimpinan')
+            ->limit(2)
+            ->get();
+
+        $staffs = Profile::where('category', 'Staff')->get();
+
+        $video = Video::where('is_active', 1)->first();
 
         return view('tv.display', [
-            // agenda
-            'agendas' => Agenda::whereDate('tanggal', '>=', Carbon::today())
-                ->orderBy('tanggal')
-                ->get(),
-
-            // pimpinan
-            'leaders' => Profile::where('category', 'Pimpinan')
-                ->limit(2)
-                ->get(),
-
-            // staff
-            'staffs' => Profile::where('category', 'Staff')->get(),
-
-            // running text
-            'runningText' => count($runningTexts)
-                ? implode('   •   ', $runningTexts)
-                : 'Tidak ada informasi ',
-
-            // video aktif
-            'video' => Video::where('is_active', 1)->first(),
+            'agendas'     => $agendas,
+            'leaders'     => $leaders,
+            'staffs'      => $staffs,
+            'video'       => $video,
+            'runningText' => $runningText ?: 'Tidak ada informasi',
         ]);
     }
 }
