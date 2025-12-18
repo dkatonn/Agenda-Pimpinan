@@ -1,40 +1,113 @@
-1️⃣ Clone project dari GitHub
+# Agenda Pimpinan
+
+Project ini dibangun menggunakan **Laravel 12** dan **Livewire 3**.
+Repository ini hanya berisi **source code**, bukan database atau data asli.
+
+---
+
+## Cara Menjalankan Project
+
+### 1. Clone project dari GitHub
+
+```bash
 git clone https://github.com/dkatonn/Agenda-Pimpinan.git
 cd Agenda-Pimpinan
+```
 
-2️⃣ Install dependency
+---
+
+### 2. Install dependency
+
+Pastikan sudah terinstall **PHP**, **Composer**, dan database yang ingin digunakan.
+
+```bash
 composer install
+```
 
-3️⃣ Buat file environment
+---
+
+### 3. Buat file environment
+
+```bash
 cp .env.example .env
 php artisan key:generate
+```
 
-4️⃣ Setting database masing-masing (INI PENTING)
+---
 
-Di .env MASING-MASING ORANG:
+### 4. Setting database (penting)
 
+Atur koneksi database di file `.env` masing-masing.
+
+Contoh menggunakan MySQL:
+
+```env
+DB_CONNECTION=mysql
 DB_DATABASE=agenda_pimpinan
 DB_USERNAME=root
 DB_PASSWORD=
+```
 
+Catatan:
 
-📌 Bisa beda-beda:
+* Setiap orang bisa berbeda
+* Kamu bisa pakai MySQL
+* Orang lain bisa pakai PostgreSQL
+* CI / GitHub Actions biasanya pakai SQLite
 
-Kamu pakai MySQL
+---
 
-Dia pakai PostgreSQL
-
-CI pakai SQLite
-
-5️⃣ Buat database kosong
+### 5. Buat database kosong
 
 Contoh MySQL:
 
+```sql
 CREATE DATABASE agenda_pimpinan;
+```
 
-6️⃣ Jalankan MIGRATION (INI KUNCI UTAMA)
+---
+
+### 6. Jalankan migration
+
+Ini langkah utama untuk membuat struktur database.
+
+```bash
 php artisan migrate
+```
 
+Database akan otomatis terbentuk dari migration, tanpa perlu file `.sql`.
 
-🎉 BOOM — database langsung jadi
-Tanpa kirim .sql
+---
+
+### 7. (Opsional) Jalankan seeder
+
+Jika ingin data awal (contoh user admin / superadmin):
+
+```bash
+php artisan db:seed
+```
+
+---
+
+## Catatan Penting
+
+* File `.env` tidak ikut di-push ke GitHub
+* Database tidak pernah di-push ke GitHub
+* Semua struktur database berasal dari migration
+* Project ini aman untuk kerja tim dan open source
+
+---
+
+## Workflow Development Singkat
+
+Setiap kali ada perubahan code:
+
+```bash
+git add .
+git commit -m "pesan perubahan"
+git push
+```
+
+---
+
+Kalau ada kendala saat setup atau development, silakan cek dokumentasi Laravel atau sesuaikan dengan environment masing-masing.
