@@ -40,7 +40,7 @@ class TvController extends Controller
             'leaders'     => $leaders,
             'staffs'      => $staffs,
             'video'       => $video,
-            'runningText' => $runningText ?: 'Tidak ada informasi',
+            'runningText' => $runningText ?: 'Belum Ada Informasi Lanjutan',
         ]);
     }
 }

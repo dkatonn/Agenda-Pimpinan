@@ -5,7 +5,7 @@
         @endphp
         <div class="text-center">
 
-            <!-- PAKSA UKURAN -->
+            
             <div class="w-40 h-40 !w-40 !h-40 mx-auto rounded-full overflow-hidden border-4 border-gray-300 shadow-md">
                 @if($staff['photo_path'])
                     <img src="{{ asset('storage/' . $staff['photo_path']) }}" class="w-full h-full object-cover">
@@ -25,5 +25,5 @@
 <script>
     setInterval(() => {
         Livewire.emit('refreshStaff');
-    }, 5000);
+    }, 3000);
 </script>

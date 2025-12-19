@@ -127,8 +127,8 @@ class Agenda extends Component
     public function render()
     {
         return view('livewire.admin.agenda', [
-            'agendas' => AgendaModel::orderBy('tanggal')
-                ->orderBy('jam')
+            'agendas' => AgendaModel::orderBy('tanggal', 'desc')
+                ->orderBy('jam', 'desc')
                 ->paginate(10),
         ]);
     }
