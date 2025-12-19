@@ -24,7 +24,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {{-- ================= FORM ================= --}}
+            {{--  FORM  --}}
             <div class="lg:col-span-1">
                 <div class="bg-gray-800 border border-gray-700 rounded-xl shadow">
 
@@ -158,7 +158,7 @@
                 </div>
             </div>
 
-            {{-- ================= TABLE ================= --}}
+            {{--  TABLE  --}}
             <div class="lg:col-span-2">
                 <div class="bg-gray-800 border border-gray-700 rounded-xl shadow overflow-x-auto">
 
