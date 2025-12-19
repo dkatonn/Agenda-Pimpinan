@@ -22,17 +22,17 @@
 
 <div class="h-full w-full p-4 flex flex-col gap-4">
 
-{{-- ================= JUDUL ================= --}}
+{{--  JUDUL  --}}
 <div class="text-center">
     <h1 class="inline-block text-2xl font-bold bg-white border-2 border-black rounded px-6 py-2">
         AGENDA PIMPINAN
     </h1>
 </div>
 
-{{-- ============ PROFIL + VIDEO ============ --}}
+{{--  PROFIL + VIDEO  --}}
 <div class="grid grid-cols-2 gap-4 flex-1 items-stretch">
 
-{{-- ===== PROFIL ===== --}}
+{{--  PROFIL  --}}
 <div class="flex flex-col border-2 border-black bg-white h-full">
     <div class="bg-gray-300 border-b-2 border-black font-semibold px-3 py-2">
         Profil Pimpinan & Staff
@@ -75,7 +75,7 @@
     </div>
 </div>
 
-{{-- ===== VIDEO ===== --}}
+{{--  VIDEO  --}}
 <div class="flex flex-col border-2 border-black bg-white h-full">
     <div class="bg-gray-300 border-b-2 border-black font-semibold px-3 py-2">
         Informasi Video
@@ -101,7 +101,7 @@
 
 </div>
 
-{{-- ================= AGENDA ================= --}}
+{{--  AGENDA  --}}
 <div class="border-2 border-black bg-white">
     <div class="bg-gray-300 border-b-2 border-black font-semibold px-3 py-2">
         Agenda Kegiatan
