@@ -87,26 +87,6 @@ Jika ingin data awal (contoh user admin / superadmin):
 php artisan db:seed
 ```
 
----
-
-## Catatan Penting
-
-* File `.env` tidak ikut di-push ke GitHub
-* Database tidak pernah di-push ke GitHub
-* Semua struktur database berasal dari migration
-* Project ini aman untuk kerja tim dan open source
-
----
-
-## Workflow Development Singkat
-
-Setiap kali ada perubahan code:
-
-```bash
-git add .
-git commit -m "pesan perubahan"
-git push
-```
 
 ---
 
