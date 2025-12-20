@@ -33,12 +33,10 @@ Route::middleware('guest')->group(function () {
 // LOGOUT (HANDLE GET & POST)
 // =======================
 
-// POST = logout sebenarnya
 Route::post('/admin/logout', [LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('admin.logout');
 
-// GET = cegah error MethodNotAllowed
 Route::get('/admin/logout', function () {
     return redirect()->route('login');
 });

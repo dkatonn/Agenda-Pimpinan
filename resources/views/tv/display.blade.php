@@ -65,16 +65,16 @@ html, body {
         </div>
 
         {{-- garis pemisah --}}
-        <div class="border-t-2 border-blue-900 mt-4 mb-3"></div>
+        <div class="border-t-2 border-blue-900  mb-3"></div>
 
         {{-- STAFF --}}
         <div class="flex-1 overflow-hidden">
             @php $staffChunks = $staffs->chunk(4); @endphp
 
             @foreach($staffChunks as $i => $chunk)
-            <div class="slide grid grid-cols-4 gap-1 fade {{ $i === 0 ? 'active' : '' }}">
+            <div class="slide grid grid-cols-4 gap-2 fade {{ $i === 0 ? 'active' : '' }}">
                 @foreach($chunk as $staff)
-                <div class="text-center py-4">
+                <div class="text-center ">
                     <img class="w-26 h-26 mx-auto object-cover rounded shadow"
                          src="{{ $staff->photo_path ? asset('storage/'.$staff->photo_path) : asset('images/default-user.png') }}">
                     <p class="text-xs font-semibold mt-1">{{ $staff->full_name }}</p>

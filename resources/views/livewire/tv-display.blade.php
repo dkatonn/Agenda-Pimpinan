@@ -29,7 +29,7 @@
     </h1>
 </div>
 
-{{--  PROFIL + VIDEO  --}}
+{{--  2 kotak diatas --}}
 <div class="grid grid-cols-2 gap-4 flex-1 items-stretch">
 
 {{--  PROFIL  --}}
@@ -149,7 +149,7 @@
     </div>
 </div>
 
-{{-- ================= RUNNING TEXT ================= --}}
+{{--  RUNNING TEXT  --}}
 <footer class="border-2 border-black bg-white">
     <div class="bg-gray-200 px-3 py-2 overflow-hidden">
         <marquee scrollamount="6">{{ $runningText }}</marquee>
