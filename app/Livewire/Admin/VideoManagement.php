@@ -40,6 +40,7 @@ class VideoManagement extends Component
                 ? 'nullable|file|mimes:mp4,mov,avi|max:51200'
                 : 'required|file|mimes:mp4,mov,avi|max:51200',
         ]);
+
         $videoPath = $this->current_video_path;
 
         if ($this->video_file) {
@@ -49,6 +50,7 @@ class VideoManagement extends Component
 
             $videoPath = $this->video_file->store('videos', 'public');
         }
+
         if ($this->editingId) {
             Video::findOrFail($this->editingId)->update([
                 'title'      => $this->title,
@@ -68,9 +70,6 @@ class VideoManagement extends Component
 
         $this->resetForm();
         $this->loadVideos();
-
-        // refresh page
-        $this->dispatch('refresh-page');
     }
 
     public function edit($id)
@@ -80,7 +79,6 @@ class VideoManagement extends Component
         $this->editingId = $video->id;
         $this->title = $video->title;
         $this->current_video_path = $video->video_path;
-
         $this->video_file = null;
     }
 
@@ -98,7 +96,7 @@ class VideoManagement extends Component
     {
         $video = Video::findOrFail($this->videoIdToDelete);
 
-        if ($video->video_path && Storage::disk('public')->exists($video->video_path)) {
+        if ($video->video_path) {
             Storage::disk('public')->delete($video->video_path);
         }
 
@@ -108,21 +106,20 @@ class VideoManagement extends Component
         $this->loadVideos();
 
         session()->flash('message', 'Video berhasil dihapus!');
-
-        //  REFRESH
-        $this->dispatch('refresh-page');
     }
 
-    public function setActive($id)
+    /**
+     * TOGGLE ACTIVE (BISA MULTI VIDEO)
+     */
+    public function toggleActive($id)
     {
-        Video::where('is_active', true)->update(['is_active' => false]);
-        Video::findOrFail($id)->update(['is_active' => true]);
+        $video = Video::findOrFail($id);
+        $video->update([
+            'is_active' => ! $video->is_active
+        ]);
 
         $this->loadVideos();
-        session()->flash('message', 'Video aktif berhasil diubah!');
-
-        // REFRESH
-        $this->dispatch('refresh-page');
+        session()->flash('message', 'Status video diperbarui!');
     }
 
     public function render()

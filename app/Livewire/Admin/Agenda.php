@@ -64,7 +64,7 @@ class Agenda extends Component
         $this->disposisi = '';
     }
 
-    /* ================= EDIT ================= */
+    /*  EDIT  */
     public function edit($id)
     {
         $agenda = AgendaModel::findOrFail($id);
@@ -81,7 +81,7 @@ class Agenda extends Component
         $this->showModal = true;
     }
 
-    /* ================= CREATE ================= */
+    /*  CREATE  */
     public function save()
     {
         $this->validate();
@@ -104,7 +104,7 @@ class Agenda extends Component
         $this->dispatch('agenda-refresh-delayed');
     }
 
-    /* ================= UPDATE ================= */
+    /*  UPDATE  */
     public function update()
     {
         $this->validate();
@@ -127,7 +127,7 @@ class Agenda extends Component
         $this->dispatch('agenda-refresh-delayed');
     }
 
-    /* ================= DELETE ================= */
+    /*  DELETE  */
     public function confirmDelete($id)
     {
         $this->agendaIdToDelete = $id;
@@ -144,7 +144,7 @@ class Agenda extends Component
         $this->dispatch('agenda-refresh-delayed');
     }
 
-    /* ================= RENDER ================= */
+    /*  RENDER  */
     public function render()
     {
         $now = Carbon::now()->format('Y-m-d H:i');

@@ -3,7 +3,7 @@
     x-on:agenda-refresh-delayed.window="
         setTimeout(() => {
             $wire.$refresh()
-        }, 5000)
+        }, 3000)
     "
     class="p-6 md:p-8 bg-gray-900 min-h-screen text-white"
 >
