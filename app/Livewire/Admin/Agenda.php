@@ -145,28 +145,28 @@ class Agenda extends Component
     }
 
     /*  RENDER  */
-    public function render()
-    {
-        $now = Carbon::now()->format('Y-m-d H:i');
+public function render()
+{
+    $now = Carbon::now()->format('Y-m-d H:i');
 
-        $agendas = AgendaModel::query()
-            ->when($this->search !== '', function ($q) {
-                $q->where(function ($qq) {
-                    $qq->where('nama_kegiatan', 'like', '%' . $this->search . '%')
-                       ->orWhere('tempat', 'like', '%' . $this->search . '%')
-                       ->orWhere('disposisi', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->orderByRaw("
-                CASE
-                    WHEN CONCAT(tanggal, ' ', jam) >= ? THEN 0
-                    ELSE 1
-                END
-            ", [$now])
-            ->orderBy('tanggal', 'asc')
-            ->orderBy('jam', 'asc')
-            ->paginate(10);
+    $agendas = AgendaModel::query()
+        ->when($this->search !== '', function ($q) {
+            $q->where(function ($qq) {
+                $qq->where('nama_kegiatan', 'like', '%' . $this->search . '%')
+                   ->orWhere('tempat', 'like', '%' . $this->search . '%')
+                   ->orWhere('disposisi', 'like', '%' . $this->search . '%');
+            });
+        })
+        ->orderByRaw("
+            CASE
+                WHEN CONCAT(tanggal, ' ', jam) >= ? THEN 0
+                ELSE 1
+            END
+        ", [$now])
+        ->orderByRaw("STR_TO_DATE(CONCAT(tanggal, ' ', jam), '%Y-%m-%d %H:%i') ASC")
+        ->paginate(10);
 
-        return view('livewire.admin.agenda', compact('agendas'));
-    }
+    return view('livewire.admin.agenda', compact('agendas'));
+}
+
 }

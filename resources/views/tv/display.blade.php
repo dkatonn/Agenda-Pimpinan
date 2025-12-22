@@ -141,10 +141,11 @@ $tanggal = \Carbon\Carbon::parse($agenda->tanggal);
 @endphp
 <tr class="@if($tanggal->isToday()) bg-green-300
            @elseif($tanggal->isTomorrow()) bg-yellow-300
-           @else bg-gray-100 @endif">
-    <td class="border p-1 text-center font-semibold">
-        {{ $tanggal->format('d M Y') }} {{ $agenda->jam }}
-    </td>
+           @else bg-gray-300 @endif">
+<td class="border p-1 text-center font-semibold">
+    {{ $tanggal->format('d M Y') }}
+    {{ \Carbon\Carbon::parse($agenda->jam)->format('H:i') }}
+</td>
     <td class="border p-1">{{ $agenda->nama_kegiatan }}</td>
     <td class="border p-1 text-center">{{ $agenda->disposisi ?? '-' }}</td>
     <td class="border p-1">{{ $agenda->keterangan ?? '-' }}</td>

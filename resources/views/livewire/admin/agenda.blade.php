@@ -72,43 +72,72 @@
                 </tr>
             </thead>
 
-            <tbody>
-                @forelse ($agendas as $item)
-                    <tr class="border-t border-gray-700" wire:key="agenda-{{ $item->id }}">
-                        <td class="px-4 py-3">{{ $item->nama_kegiatan }}</td>
+<tbody>
+@php
+    $now = \Carbon\Carbon::now();
+    $today = $now->toDateString();
+    $tomorrow = $now->copy()->addDay()->toDateString();
+@endphp
 
-                        <td class="px-4 py-3">
-                            {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}<br>
-                            <span class="text-sm text-gray-300">
-                                {{ \Carbon\Carbon::parse($item->jam)->format('H:i') }}
-                            </span>
-                        </td>
+@forelse ($agendas as $item)
+    @php
+        $agendaTime = \Carbon\Carbon::parse($item->tanggal);
 
-                        <td class="px-4 py-3">{{ $item->tempat }}</td>
-                        <td class="px-4 py-3">{{ $item->disposisi ?? '-' }}</td>
+        if ($agendaTime->format('H:i:s') === '00:00:00' && $item->jam) {
+            $agendaTime->setTimeFromTimeString($item->jam);
+        }
 
-                        <td class="px-4 py-3 text-center space-x-2">
-                            <button
-                                wire:click="edit({{ $item->id }})"
-                                class="px-3 py-1 bg-blue-600 rounded">
-                                Edit
-                            </button>
+        $isPast = $agendaTime->lt($now);
+        $isToday = $agendaTime->toDateString() === $today;
+        $isTomorrow = $agendaTime->toDateString() === $tomorrow;
+    @endphp
 
-                            <button
-                                wire:click="confirmDelete({{ $item->id }})"
-                                class="px-3 py-1 bg-red-600 rounded">
-                                Hapus
-                            </button>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-4 text-center text-gray-400">
-                            Data agenda tidak ditemukan
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
+    <tr class="border-t border-gray-700
+        {{ $isPast ? 'bg-red-900/20' : ($isToday ? 'bg-yellow-900/20' : ($isTomorrow ? 'bg-green-900/20' : '')) }}"
+        wire:key="agenda-{{ $item->id }}"
+    >
+        <td class="px-4 py-3">{{ $item->nama_kegiatan }}</td>
+
+        <td class="px-4 py-3">
+            <span class="
+                {{ $isPast ? 'text-red-400 font-semibold' :
+                   ($isToday ? 'text-green-300 font-semibold' :
+                   ($isTomorrow ? 'text-yellow-300 font-semibold' : '')) }}
+            ">
+                {{ $agendaTime->format('d M Y') }}
+            </span><br>
+
+            <span class="text-sm
+                {{ $isPast ? 'text-red-300' :
+                   ($isToday ? 'text-green-200' :
+                   ($isTomorrow ? 'text-yellow-200' : 'text-gray-300')) }}
+            ">
+                {{ $agendaTime->format('H:i') }}
+            </span>
+        </td>
+
+        <td class="px-4 py-3">{{ $item->tempat }}</td>
+        <td class="px-4 py-3">{{ $item->disposisi ?? '-' }}</td>
+
+        <td class="px-4 py-3 text-center space-x-2">
+            <button wire:click="edit({{ $item->id }})" class="px-3 py-1 bg-blue-600 rounded">
+                Edit
+            </button>
+            <button wire:click="confirmDelete({{ $item->id }})" class="px-3 py-1 bg-red-600 rounded">
+                Hapus
+            </button>
+        </td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="5" class="px-4 py-4 text-center text-gray-400">
+            Data agenda tidak ditemukan
+        </td>
+    </tr>
+@endforelse
+</tbody>
+
+
         </table>
     </div>
 
