@@ -7,12 +7,6 @@
             <h1 class="text-xl sm:text-3xl font-bold">
                 Kelola Profil Pimpinan & Staff
             </h1>
-
-            <button
-                wire:click="resetForm"
-                class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm sm:text-base w-full sm:w-auto">
-                + Tambah Profil
-            </button>
         </div>
 
         {{-- FLASH MESSAGE --}}

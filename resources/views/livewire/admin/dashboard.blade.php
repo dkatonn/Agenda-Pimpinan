@@ -85,17 +85,14 @@
                                     <td class="py-3 px-4 text-gray-200">{{ $video->title }}</td>
 
                                     <td class="py-3 px-4 text-right">
-                                        @if (!$video->is_active)
-                                            <button wire:click="setActiveVideo({{ $video->id }})"
-                                                    class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                                                Aktifkan
-                                            </button>
-                                        @else
-                                            <button disabled
-                                                    class="px-3 py-1 bg-green-600 text-white rounded cursor-not-allowed opacity-75">
-                                                Aktif
-                                            </button>
-                                        @endif
+                                    <button
+                                        wire:click="toggleActiveVideo({{ $video->id }})"
+                                        class="px-3 py-1 rounded text-white transition-colors
+                                            {{ $video->is_active
+                                                ? 'bg-green-600 hover:bg-green-700'
+                                                : 'bg-blue-600 hover:bg-blue-700' }}">
+                                        {{ $video->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    </button>
                                     </td>
                                 </tr>
                             @empty

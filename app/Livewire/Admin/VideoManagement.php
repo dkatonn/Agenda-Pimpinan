@@ -70,6 +70,8 @@ class VideoManagement extends Component
 
         $this->resetForm();
         $this->loadVideos();
+
+        $this->dispatch('refresh-page');
     }
 
     public function edit($id)
@@ -80,6 +82,7 @@ class VideoManagement extends Component
         $this->title = $video->title;
         $this->current_video_path = $video->video_path;
         $this->video_file = null;
+
     }
 
     public function resetForm()
@@ -105,6 +108,8 @@ class VideoManagement extends Component
         $this->videoIdToDelete = null;
         $this->loadVideos();
 
+        $this->dispatch('refresh-page');
+
         session()->flash('message', 'Video berhasil dihapus!');
     }
 
@@ -119,7 +124,10 @@ class VideoManagement extends Component
         ]);
 
         $this->loadVideos();
+        
         session()->flash('message', 'Status video diperbarui!');
+
+        $this->dispatch('refresh-page');
     }
 
     public function render()

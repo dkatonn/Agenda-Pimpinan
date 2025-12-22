@@ -61,19 +61,17 @@ class Dashboard extends Component
         $this->videos = Video::orderBy('id','desc')->get();
     }
 
-    public function setActiveVideo($videoId)
+    public function toggleActiveVideo($videoId)
     {
-        Video::query()->update(['is_active' => 0]);
+        $video = Video::findOrFail($videoId);
 
-        // Mengakifkann video
-        $video = Video::find($videoId);
+        $video->update([
+            'is_active' => ! $video->is_active
+        ]);
 
-        if ($video) {
-            $video->is_active = 1;
-            $video->save();
-        }
         $this->loadData();
-        session()->flash('message', 'Video berhasil diaktifkan.');
+
+        session()->flash('message', 'Status video diperbarui.');
     }
 
     public function render()
