@@ -10,13 +10,10 @@ use Illuminate\Support\Facades\Hash;
 class UserManagement extends Component
 {
     public $items = [];
-
     public $editingId = null;
-
     public $email = '';
     public $password = '';
     public $role = 'Admin';
-
     public $showPassword = false;
     public $userIdToDelete = null;
 
@@ -57,9 +54,7 @@ class UserManagement extends Component
             'role'  => 'required|in:Admin,Superadmin',
         ];
 
-        $rules['password'] = $this->editingId
-            ? 'nullable|min:5'
-            : 'required|min:5';
+        $rules['password'] = $this->editingId ? 'nullable|min:5' : 'required|min:5';
 
         $this->validate($rules);
 
@@ -100,12 +95,18 @@ class UserManagement extends Component
 
         $this->resetForm();
         $this->loadItems();
+
+        session()->flash('message', $this->editingId
+            ? 'User berhasil diperbarui!'
+            : 'User berhasil ditambahkan!'
+        );
+
+        $this->dispatch('refresh-page');
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
-
         $this->editingId = $id;
         $this->email = $user->email;
         $this->password = '';
@@ -122,5 +123,8 @@ class UserManagement extends Component
         User::findOrFail($this->userIdToDelete)->delete();
         $this->userIdToDelete = null;
         $this->loadItems();
+
+        session()->flash('message', 'User berhasil dihapus!');
+        $this->dispatch('refresh-page');
     }
 }

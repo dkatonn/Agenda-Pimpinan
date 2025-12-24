@@ -9,6 +9,13 @@
             </h1>
         </div>
 
+        {{-- FLASH MESSAGE --}}
+        @if (session()->has('message'))
+            <div class="bg-green-600 text-white px-4 py-3 rounded-lg mb-6 text-sm">
+                {{ session('message') }}
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             {{-- FORM --}}
@@ -189,3 +196,11 @@
     @endif
 
 </div>
+
+<script>
+document.addEventListener('livewire:init', () => {
+    Livewire.on('refresh-page', () => {
+        setTimeout(() => window.location.reload(), 1500);
+    });
+});
+</script>

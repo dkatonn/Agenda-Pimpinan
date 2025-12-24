@@ -158,3 +158,11 @@
     @endif
 
 </div>
+
+<script>
+document.addEventListener('livewire:init', () => {
+    Livewire.on('refresh-page', () => {
+        setTimeout(() => window.location.reload(), 1500);
+    });
+});
+</script>

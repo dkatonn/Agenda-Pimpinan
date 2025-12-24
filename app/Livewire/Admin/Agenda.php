@@ -30,14 +30,47 @@ class Agenda extends Component
 
     protected $rules = [
         'nama_kegiatan' => 'required',
-        'tanggal' => 'required|date',
-        'jam' => 'required',
-        'tempat' => 'required',
+        'tanggal'       => 'required|date',
+        'jam'           => 'required',
+        'tempat'        => 'required',
     ];
 
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function render()
+    {
+        $now = Carbon::now()->format('Y-m-d H:i:s');
+
+        $agendas = AgendaModel::query()
+            ->when($this->search, function ($q) {
+                $q->where('nama_kegiatan', 'like', '%' . $this->search . '%');
+            })
+            ->orderByRaw("
+                CASE
+                    WHEN CONCAT(tanggal, ' ', jam) >= ? THEN 1
+                    ELSE 2
+                END
+            ", [$now])
+            ->orderByRaw("
+                CASE
+                    WHEN CONCAT(tanggal, ' ', jam) >= ? 
+                        THEN CONCAT(tanggal, ' ', jam)
+                    ELSE NULL
+                END ASC
+            ", [$now])
+            ->orderByRaw("
+                CASE
+                    WHEN CONCAT(tanggal, ' ', jam) < ?
+                        THEN CONCAT(tanggal, ' ', jam)
+                    ELSE NULL
+                END DESC
+            ", [$now])
+            ->paginate(10);
+
+        return view('livewire.admin.agenda', compact('agendas'));
     }
 
     public function openModal()
@@ -62,9 +95,9 @@ class Agenda extends Component
         $this->tempat = '';
         $this->keterangan = '';
         $this->disposisi = '';
+        $this->resetValidation();
     }
 
-    /*  EDIT  */
     public function edit($id)
     {
         $agenda = AgendaModel::findOrFail($id);
@@ -81,53 +114,47 @@ class Agenda extends Component
         $this->showModal = true;
     }
 
-    /*  CREATE  */
     public function save()
     {
         $this->validate();
 
-        AgendaModel::create([
-            'nama_kegiatan' => $this->nama_kegiatan,
-            'tanggal' => $this->tanggal,
-            'jam' => $this->jam,
-            'tempat' => $this->tempat,
-            'keterangan' => $this->keterangan,
-            'disposisi' => $this->disposisi,
-        ]);
+        AgendaModel::create($this->only([
+            'nama_kegiatan',
+            'tanggal',
+            'jam',
+            'tempat',
+            'keterangan',
+            'disposisi'
+        ]));
 
         $this->successMessage = 'Agenda berhasil ditambahkan';
-
         $this->resetForm();
-        $this->resetPage();
         $this->showModal = false;
 
-        $this->dispatch('agenda-refresh-delayed');
+        $this->dispatch('refresh-page');
     }
 
-    /*  UPDATE  */
     public function update()
     {
         $this->validate();
 
-        AgendaModel::findOrFail($this->agendaId)->update([
-            'nama_kegiatan' => $this->nama_kegiatan,
-            'tanggal' => $this->tanggal,
-            'jam' => $this->jam,
-            'tempat' => $this->tempat,
-            'keterangan' => $this->keterangan,
-            'disposisi' => $this->disposisi,
-        ]);
+        AgendaModel::findOrFail($this->agendaId)
+            ->update($this->only([
+                'nama_kegiatan',
+                'tanggal',
+                'jam',
+                'tempat',
+                'keterangan',
+                'disposisi'
+            ]));
 
         $this->successMessage = 'Agenda berhasil diperbarui';
-
         $this->resetForm();
-        $this->resetPage();
         $this->showModal = false;
 
-        $this->dispatch('agenda-refresh-delayed');
+        $this->dispatch('refresh-page');
     }
 
-    /*  DELETE  */
     public function confirmDelete($id)
     {
         $this->agendaIdToDelete = $id;
@@ -136,37 +163,9 @@ class Agenda extends Component
     public function deleteAgenda()
     {
         AgendaModel::findOrFail($this->agendaIdToDelete)->delete();
-
         $this->agendaIdToDelete = null;
         $this->successMessage = 'Agenda berhasil dihapus';
 
-        $this->resetPage();
-        $this->dispatch('agenda-refresh-delayed');
+        $this->dispatch('refresh-page');
     }
-
-    /*  RENDER  */
-public function render()
-{
-    $now = Carbon::now()->format('Y-m-d H:i');
-
-    $agendas = AgendaModel::query()
-        ->when($this->search !== '', function ($q) {
-            $q->where(function ($qq) {
-                $qq->where('nama_kegiatan', 'like', '%' . $this->search . '%')
-                   ->orWhere('tempat', 'like', '%' . $this->search . '%')
-                   ->orWhere('disposisi', 'like', '%' . $this->search . '%');
-            });
-        })
-        ->orderByRaw("
-            CASE
-                WHEN CONCAT(tanggal, ' ', jam) >= ? THEN 0
-                ELSE 1
-            END
-        ", [$now])
-        ->orderByRaw("STR_TO_DATE(CONCAT(tanggal, ' ', jam), '%Y-%m-%d %H:%i') ASC")
-        ->paginate(10);
-
-    return view('livewire.admin.agenda', compact('agendas'));
-}
-
 }

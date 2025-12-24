@@ -5,7 +5,7 @@
         {{-- HEADER --}}
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
             <h1 class="text-xl sm:text-3xl font-bold">
-                Kelola Profil Pimpinan & Staff
+                Manajemen Profil Pimpinan & Staff
             </h1>
         </div>
 
