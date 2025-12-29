@@ -218,8 +218,10 @@
 
 <script>
 document.addEventListener('livewire:init', () => {
-    Livewire.on('refresh-page', () => {
-        setTimeout(() => window.location.reload(), 1500);
+    Livewire.on('admin-refresh', () => {
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
     });
 });
 </script>

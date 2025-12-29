@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TvController;
+use App\Models\Agenda;
+use App\Models\Video;
 
 // =======================
 // PUBLIC ROUTES
@@ -17,8 +19,12 @@ Route::get('/', function () {
 Route::get('/tv', [TvController::class, 'display'])
     ->name('tv.display');
 
-    Route::get('/tv/status', [TvController::class, 'status'])
-    ->name('tv.status');
+    Route::get('/tv/status', function () {
+    return response()->json([
+        'agenda_count' => Agenda::count(),
+        'video_count'  => Video::count(),
+    ]);
+})->name('tv.status');
 
 
 

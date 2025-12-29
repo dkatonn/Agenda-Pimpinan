@@ -128,12 +128,11 @@ html, body {
 {{-- PROFIL --}}
 <div class="w-1/2 card p-2 flex flex-col relative">
     <div class="section-title mb-2">Profil Pimpinan</div>
-    <div id="profileBadge" class="profile-badge">Update</div>
 
     <div class="flex-1 flex items-center justify-center overflow-hidden">
         @forelse($profileCarousel as $i => $profile)
             <div class="profile-slide flex flex-col items-center gap-4 fade {{ $i === 0 ? 'active' : '' }}">
-                <img class="w-36 h-36 object-cover rounded-xl shadow"
+                <img class="w-40 h-40 object-cover rounded-2xl shadow"
                      src="{{ $profile['photo'] ? asset('storage/'.$profile['photo']) : asset('images/default-user.png') }}">
                 <div class="text-center">
                     <p class="text-xl font-bold">{{ $profile['name'] }}</p>
@@ -193,9 +192,9 @@ html, body {
             <tbody class="agenda-slide {{ $i === 0 ? 'active' : '' }}">
                 @foreach($chunk as $agenda)
                 @php $tanggal = \Carbon\Carbon::parse($agenda->tanggal); @endphp
-                <tr class="@if($tanggal->isToday()) bg-green-200
-                           @elseif($tanggal->isTomorrow()) bg-yellow-200
-                           @else bg-slate-200 @endif">
+                <tr class="@if($tanggal->isToday()) bg-green-300
+                           @elseif($tanggal->isTomorrow()) bg-yellow-300
+                           @else bg-slate-400 @endif">
                     <td class="p-2 font-semibold text-center">
                         {{ $tanggal->format('d M Y') }}
                         {{ $agenda->jam ? \Carbon\Carbon::parse($agenda->jam)->format('H:i') : '' }}
@@ -224,7 +223,7 @@ html, body {
 </div>
 
 {{-- RUNNING TEXT --}}
-<div class="fixed bottom-8 left-0 w-full bg-[#0f2c5c] text-yellow-300 py-2 px-4 z-50">
+<div class="fixed bottom-4 left-0 w-full bg-[#0f2c5c] text-yellow-300 py-2 px-4 z-50">
     <marquee scrollamount="6">{{ $runningText }}</marquee>
 </div>
 
@@ -317,7 +316,7 @@ if(video && videos.length){
     video.addEventListener('click',toggleMute);
 }
 
-// AUTO REFRESH IF DATA CHANGED
+// AUTO REFRESH IF DATA CHANGED (fallback polling)
 setInterval(async () => {
     try {
         const res = await fetch("{{ route('tv.status') }}");
@@ -332,6 +331,26 @@ setInterval(async () => {
         console.error('Gagal cek status', e);
     }
 }, 30000);
+</script>
+
+{{-- Load Echo & app.js --}}
+@vite(['resources/js/app.js'])
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.Echo) {
+        console.log('Echo loaded, listening tv.updated...');
+
+        window.Echo.channel('tv-channel')
+            .listen('.tv.updated', () => {
+                console.log('Realtime refresh');
+
+                setTimeout(() => {
+                    location.reload();
+                }, 0); 
+            });
+    }
+});
 </script>
 
 </body>

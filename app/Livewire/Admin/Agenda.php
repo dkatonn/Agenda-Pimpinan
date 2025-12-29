@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Agenda as AgendaModel;
 use Carbon\Carbon;
+use App\Events\TvUpdated;
 
 class Agenda extends Component
 {
@@ -45,9 +46,9 @@ class Agenda extends Component
         $now = Carbon::now()->format('Y-m-d H:i:s');
 
         $agendas = AgendaModel::query()
-            ->when($this->search, function ($q) {
-                $q->where('nama_kegiatan', 'like', '%' . $this->search . '%');
-            })
+            ->when($this->search, fn($q) =>
+                $q->where('nama_kegiatan', 'like', '%' . $this->search . '%')
+            )
             ->orderByRaw("
                 CASE
                     WHEN CONCAT(tanggal, ' ', jam) >= ? THEN 1
@@ -127,11 +128,13 @@ class Agenda extends Component
             'disposisi'
         ]));
 
+        event(new TvUpdated());
+
         $this->successMessage = 'Agenda berhasil ditambahkan';
         $this->resetForm();
         $this->showModal = false;
 
-        $this->dispatch('refresh-page');
+        $this->dispatch('admin-refresh');
     }
 
     public function update()
@@ -148,11 +151,13 @@ class Agenda extends Component
                 'disposisi'
             ]));
 
+        event(new TvUpdated());
+
         $this->successMessage = 'Agenda berhasil diperbarui';
         $this->resetForm();
         $this->showModal = false;
 
-        $this->dispatch('refresh-page');
+        $this->dispatch('admin-refresh');
     }
 
     public function confirmDelete($id)
@@ -164,8 +169,11 @@ class Agenda extends Component
     {
         AgendaModel::findOrFail($this->agendaIdToDelete)->delete();
         $this->agendaIdToDelete = null;
+
+        event(new TvUpdated());
+
         $this->successMessage = 'Agenda berhasil dihapus';
 
-        $this->dispatch('refresh-page');
+        $this->dispatch('admin-refresh');
     }
 }

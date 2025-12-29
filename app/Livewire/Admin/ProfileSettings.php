@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Storage;
+use App\Events\TvUpdated;
 
 class ProfileSettings extends Component
 {
@@ -21,7 +22,6 @@ class ProfileSettings extends Component
     public $current_photo_path;
     public $profileIdToDelete = null;
     public $pimpinanPenuh = false;
-
 
     protected $rules = [
         'full_name' => 'required|string|max:255',
@@ -53,7 +53,6 @@ class ProfileSettings extends Component
             ->latest()
             ->get();
 
-        // Validasi pimpinan 2
         $this->pimpinanPenuh = Profile::where('category', 'Pimpinan')->count() >= 2;
     }
 
@@ -66,15 +65,9 @@ class ProfileSettings extends Component
         $this->current_photo_path = null;
         $this->resetErrorBag();
 
-        // jika sudah 2 pimpinan
         $this->category = $this->pimpinanPenuh ? 'Staff' : 'Staff';
     }
 
-    /**
-     * ================================
-     * VALIDASI LIMIT PIMPINAN (MAX 2)
-     * ================================
-     */
     private function pimpinanSudahPenuh()
     {
         return Profile::where('category', 'Pimpinan')
@@ -88,7 +81,6 @@ class ProfileSettings extends Component
     {
         $this->validate();
 
-        // validasi pimpinan 2 orang
         if ($this->category === 'Pimpinan' && $this->pimpinanSudahPenuh()) {
             $this->addError('category', 'Pimpinan maksimal hanya 2 orang.');
             return;
@@ -109,21 +101,19 @@ class ProfileSettings extends Component
                 'category'   => $this->category,
                 'photo_path' => $photoPath,
             ]);
-
-            session()->flash('message', 'Profil berhasil diperbarui!');
         } else {
             Profile::create([
                 'full_name'  => $this->full_name,
                 'category'   => $this->category,
                 'photo_path' => $photoPath,
             ]);
-
-            session()->flash('message', 'Profil baru berhasil ditambahkan!');
         }
+
+        // 🔔 realtime ke TV
+        event(new TvUpdated());
 
         $this->resetForm();
         $this->loadProfiles();
-
         $this->dispatch('refresh-page');
     }
 
@@ -136,13 +126,11 @@ class ProfileSettings extends Component
         $this->category = $profile->category;
         $this->current_photo_path = $profile->photo_path;
 
-        
         if ($profile->category === 'Pimpinan') {
             $this->pimpinanPenuh = false;
         }
 
         $this->resetErrorBag();
-
     }
 
     public function confirmDelete($id)
@@ -159,10 +147,12 @@ class ProfileSettings extends Component
         }
 
         $profile->delete();
-
         $this->profileIdToDelete = null;
-        session()->flash('message', 'Profil berhasil dihapus!');
 
+       
+        event(new TvUpdated());
+
+        session()->flash('message', 'Profil berhasil dihapus!');
         $this->loadProfiles();
         $this->dispatch('refresh-page');
     }

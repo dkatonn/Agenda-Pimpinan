@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use App\Models\RunningText;
+use App\Events\TvUpdated;
 
 class RunningTextEdit extends Component
 {
@@ -57,16 +58,15 @@ class RunningTextEdit extends Component
             RunningText::findOrFail($this->editingId)->update([
                 'text' => $this->text,
             ]);
-
-            session()->flash('message', 'Running text berhasil diperbarui!');
         } else {
             RunningText::create([
                 'text' => $this->text,
                 'is_active' => false,
             ]);
-
-            session()->flash('message', 'Running text berhasil ditambahkan!');
         }
+
+        // 🔔 realtime ke TV
+        event(new TvUpdated());
 
         $this->closeModal();
         $this->loadItems();
@@ -87,8 +87,11 @@ class RunningTextEdit extends Component
 
         RunningText::findOrFail($this->textIdToDelete)->delete();
         $this->textIdToDelete = null;
-        $this->loadItems();
 
+        // 🔔 realtime ke TV
+        event(new TvUpdated());
+
+        $this->loadItems();
         session()->flash('message', 'Running text berhasil dihapus!');
         $this->dispatch('refresh-page');
     }
@@ -100,8 +103,10 @@ class RunningTextEdit extends Component
             'is_active' => !$item->is_active
         ]);
 
-        $this->loadItems();
+        // 🔔 realtime ke TV
+        event(new TvUpdated());
 
+        $this->loadItems();
         session()->flash('message', 'Status running text diperbarui!');
         $this->dispatch('refresh-page');
     }
@@ -111,8 +116,10 @@ class RunningTextEdit extends Component
         RunningText::where('is_active', true)->update(['is_active' => false]);
         RunningText::findOrFail($id)->update(['is_active' => true]);
 
-        $this->loadItems();
+        // 🔔 realtime ke TV
+        event(new TvUpdated());
 
+        $this->loadItems();
         session()->flash('message', 'Running text aktif berhasil diubah!');
         $this->dispatch('refresh-page');
     }
