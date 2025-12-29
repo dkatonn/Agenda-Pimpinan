@@ -13,7 +13,7 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background: #eef2f7;
+    background: #e2e3e3;
     font-family: system-ui, sans-serif;
 }
 
@@ -23,9 +23,12 @@ html, body {
 .agenda-slide { display: none; }
 .agenda-slide.active { display: table-row-group; }
 
+.profile-slide { display: none; }
+.profile-slide.active { display: flex; }
+
 .fade { animation: fade .4s ease; }
 @keyframes fade {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -68,6 +71,35 @@ html, body {
     font-size: 20px;
     font-weight: 700;
 }
+
+/* EMPTY STATE TANPA ANIMASI */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    opacity: .7;
+}
+.empty-state.light { color: #6b7280; }
+.empty-icon { font-size: 42px; }
+
+/* BADGE NOTIF PROFIL */
+.profile-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #16a34a;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+.profile-badge.show { opacity: 1; }
 </style>
 </head>
 
@@ -75,6 +107,7 @@ html, body {
 
 <div class="h-screen w-screen p-3 flex flex-col gap-3">
 
+{{-- HEADER --}}
 <div class="grid grid-cols-3 items-center">
     <div></div>
     <h1 class="text-2xl font-bold text-center">
@@ -84,7 +117,7 @@ html, body {
     </h1>
     <div class="flex justify-end">
         <div id="tvClock"
-             class="tv-clock text-xl bg-[#0f2c5c] text-yellow-300 px-6 py-3 rounded-xl shadow-lg">
+             class="tv-clock bg-[#0f2c5c] text-yellow-300 px-6 py-3 rounded-xl shadow-lg">
             00:00:00
         </div>
     </div>
@@ -92,54 +125,55 @@ html, body {
 
 <div class="flex gap-2" style="height:50vh">
 
-<div class="w-1/2 card p-2 flex flex-col">
+{{-- PROFIL --}}
+<div class="w-1/2 card p-2 flex flex-col relative">
     <div class="section-title mb-2">Profil Pimpinan</div>
+    <div id="profileBadge" class="profile-badge">Update</div>
 
-    <div class="grid grid-cols-2 gap-3 mb-3">
-        @foreach($leaders as $leader)
-        <div class="flex items-center flex-col gap-2 bg-slate-100 rounded-lg p-2">
-            <img class="w-24 h-24 object-cover rounded-lg shadow"
-                 src="{{ $leader->photo_path ? asset('storage/'.$leader->photo_path) : asset('images/default-user.png') }}">
-            <div>
-                <p class="text-sm font-bold text-center">{{ $leader->full_name }}</p>
-                <p class="text-xs text-gray-600 text-center">Pimpinan</p>
+    <div class="flex-1 flex items-center justify-center overflow-hidden">
+        @forelse($profileCarousel as $i => $profile)
+            <div class="profile-slide flex flex-col items-center gap-4 fade {{ $i === 0 ? 'active' : '' }}">
+                <img class="w-36 h-36 object-cover rounded-xl shadow"
+                     src="{{ $profile['photo'] ? asset('storage/'.$profile['photo']) : asset('images/default-user.png') }}">
+                <div class="text-center">
+                    <p class="text-xl font-bold">{{ $profile['name'] }}</p>
+                    <p class="text-sm {{ $profile['type'] === 'pimpinan' ? 'text-blue-700 font-semibold' : 'text-gray-600' }}">
+                        {{ ucfirst($profile['type']) }}
+                    </p>
+                </div>
             </div>
-        </div>
-        @endforeach
-    </div>
-
-    <div class="flex-1 overflow-hidden">
-        @foreach($staffs->chunk(4) as $i => $chunk)
-        <div class="slide grid grid-cols-2 grid-rows-2 gap-2 fade {{ $i === 0 ? 'active' : '' }}">
-            @foreach($chunk as $staff)
-            <div class="flex flex-col items-center bg-slate-100 rounded-lg p-1">
-                <img class="w-16 h-16 object-contain bg-white p-1 rounded-lg shadow"
-                     src="{{ $staff->photo_path ? asset('storage/'.$staff->photo_path) : asset('images/default-user.png') }}">
-                <p class="text-xs font-semibold mt-1 text-center">{{ $staff->full_name }}</p>
-                <p class="text-[10px] text-gray-500">Staff</p>
+        @empty
+            <div class="empty-state light">
+                <div class="empty-icon">👤</div>
+                <div class="text-lg font-semibold">Belum ada profil</div>
             </div>
-            @endforeach
-        </div>
-        @endforeach
+        @endforelse
     </div>
 </div>
 
+{{-- VIDEO --}}
 <div class="flex-1 card p-2 flex flex-col relative">
     <div class="section-title mb-2">Video Kegiatan</div>
-    <div class="flex-1 bg-black rounded-lg overflow-hidden relative">
+    <div class="flex-1 bg-grey-200 rounded-lg overflow-hidden relative flex items-center justify-center">
         @if($videos->count())
-        <video id="tvVideo" class="w-full h-full object-cover fade-in" autoplay muted playsinline>
-            <source src="{{ asset('storage/'.$videos[0]->video_path) }}" type="video/mp4">
-        </video>
-        <div id="muteIcon" class="mute-indicator">🔇</div>
+            <video id="tvVideo" class="w-full h-full object-cover fade-in" autoplay muted playsinline>
+                <source src="{{ asset('storage/'.$videos[0]->video_path) }}" type="video/mp4">
+            </video>
+            <div id="muteIcon" class="mute-indicator">🔇</div>
+        @else
+            <div class="empty-state" style="color:grey;">
+                <div class="empty-icon">🎬</div>
+                <div class="text-lg font-semibold">Belum ada video kegiatan</div>
+            </div>
         @endif
     </div>
 </div>
 
 </div>
 
+{{-- AGENDA --}}
 <div class="card overflow-hidden">
-    <div class="section-title text-5xl px-12 py-4 font-extrabold rounded-none mb-2">
+    <div class="section-title text-4xl px-10 py-3 font-extrabold rounded-none mb-2">
         Agenda Kegiatan
     </div>
 
@@ -154,32 +188,52 @@ html, body {
         </tr>
         </thead>
 
-@foreach($agendas->chunk(5) as $i => $chunk)
-<tbody class="agenda-slide {{ $i === 0 ? 'active' : '' }}">
-@foreach($chunk as $agenda)
-@php $tanggal = \Carbon\Carbon::parse($agenda->tanggal); @endphp
-<tr class="@if($tanggal->isToday()) bg-green-200
-           @elseif($tanggal->isTomorrow()) bg-yellow-200
-           @else bg-slate-200 @endif">
-    <td class="p-2 font-semibold text-center">
-        {{ $tanggal->format('d M Y') }} {{ \Carbon\Carbon::parse($agenda->jam)->format('H:i') }}
-    </td>
-    <td class="p-2">{{ $agenda->nama_kegiatan }}</td>
-    <td class="p-2 text-center">{{ $agenda->tempat ?? '-' }}</td>
-    <td class="p-2 text-center">{{ $agenda->disposisi ?? '-' }}</td>
-    <td class="p-2">{{ $agenda->keterangan ?? '-' }}</td>
-</tr>
-@endforeach
-</tbody>
-@endforeach
-</table>
+        @if($agendas->count())
+            @foreach($agendas->chunk(5) as $i => $chunk)
+            <tbody class="agenda-slide {{ $i === 0 ? 'active' : '' }}">
+                @foreach($chunk as $agenda)
+                @php $tanggal = \Carbon\Carbon::parse($agenda->tanggal); @endphp
+                <tr class="@if($tanggal->isToday()) bg-green-200
+                           @elseif($tanggal->isTomorrow()) bg-yellow-200
+                           @else bg-slate-200 @endif">
+                    <td class="p-2 font-semibold text-center">
+                        {{ $tanggal->format('d M Y') }}
+                        {{ $agenda->jam ? \Carbon\Carbon::parse($agenda->jam)->format('H:i') : '' }}
+                    </td>
+                    <td class="p-2">{{ $agenda->nama_kegiatan }}</td>
+                    <td class="p-2 text-center">{{ $agenda->tempat ?? '-' }}</td>
+                    <td class="p-2 text-center">{{ $agenda->disposisi ?? '-' }}</td>
+                    <td class="p-2">{{ $agenda->keterangan ?? '-' }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+            @endforeach
+        @else
+            <tbody class="agenda-slide active">
+                <tr>
+                    <td colspan="5" class="p-6">
+                        <div class="empty-state light">
+                            <div class="empty-icon">📅</div>
+                            <div class="text-lg font-semibold">Belum ada agenda hari ini</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        @endif
+    </table>
 </div>
 
+{{-- RUNNING TEXT --}}
 <div class="fixed bottom-8 left-0 w-full bg-[#0f2c5c] text-yellow-300 py-2 px-4 z-50">
     <marquee scrollamount="6">{{ $runningText }}</marquee>
 </div>
 
 </div>
+
+<script>
+const initialAgendaCount = {{ $agendas->count() }};
+const initialVideoCount  = {{ $videos->count() }};
+</script>
 
 <script>
 function pad(n){ return n.toString().padStart(2,'0'); }
@@ -189,22 +243,29 @@ function updateClock() {
 }
 setInterval(updateClock,1000); updateClock();
 
-// STAFF
-let staffIndex = 0;
-const staffSlides = document.querySelectorAll('.slide');
+// PROFILE carousel + notif badge
+let profileIndex = 0;
+const profileSlides = document.querySelectorAll('.profile-slide');
+const profileBadge = document.getElementById('profileBadge');
+
 setInterval(() => {
-    if(staffSlides.length){
-        staffSlides[staffIndex].classList.remove('active');
-        staffIndex = (staffIndex + 1) % staffSlides.length;
-        staffSlides[staffIndex].classList.add('active');
+    if (profileSlides.length > 1) {
+        profileSlides[profileIndex].classList.remove('active');
+        profileIndex = (profileIndex + 1) % profileSlides.length;
+        profileSlides[profileIndex].classList.add('active');
+
+        if(profileBadge){
+            profileBadge.classList.add('show');
+            setTimeout(()=>profileBadge.classList.remove('show'),1500);
+        }
     }
 }, 5000);
 
-// AGENDA
+// AGENDA carousel
 let agendaIndex = 0;
 const agendaSlides = document.querySelectorAll('.agenda-slide');
 setInterval(() => {
-    if(agendaSlides.length){
+    if(agendaSlides.length > 1){
         agendaSlides[agendaIndex].classList.remove('active');
         agendaIndex = (agendaIndex + 1) % agendaSlides.length;
         agendaSlides[agendaIndex].classList.add('active');
@@ -218,18 +279,23 @@ const muteIcon = document.getElementById('muteIcon');
 let index = 0, isMuted = true, muteTimeout;
 
 function showMuteIcon(){
+    if(!muteIcon) return;
     muteIcon.innerText = isMuted ? '🔇' : '🔊';
     muteIcon.classList.add('show');
     clearTimeout(muteTimeout);
     muteTimeout = setTimeout(()=>muteIcon.classList.remove('show'),1500);
 }
+
 function toggleMute(){
+    if(!video) return;
     isMuted = !isMuted;
     video.muted = isMuted;
     video.play();
     showMuteIcon();
 }
+
 function playVideo(idx){
+    if(!video || videos.length === 0) return;
     video.classList.add('fade-out');
     setTimeout(()=>{
         video.src = videos[idx];
@@ -240,15 +306,32 @@ function playVideo(idx){
             video.muted = isMuted;
             video.play();
         };
-    },1800);
+    },300);
 }
-if(video){
+
+if(video && videos.length){
     video.addEventListener('ended',()=>{
         index = (index+1)%videos.length;
         playVideo(index);
     });
     video.addEventListener('click',toggleMute);
 }
+
+// AUTO REFRESH IF DATA CHANGED
+setInterval(async () => {
+    try {
+        const res = await fetch("{{ route('tv.status') }}");
+        const data = await res.json();
+        if (
+            data.agenda_count !== initialAgendaCount ||
+            data.video_count !== initialVideoCount
+        ) {
+            location.reload();
+        }
+    } catch (e) {
+        console.error('Gagal cek status', e);
+    }
+}, 30000);
 </script>
 
 </body>

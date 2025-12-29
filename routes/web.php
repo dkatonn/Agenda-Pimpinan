@@ -17,6 +17,10 @@ Route::get('/', function () {
 Route::get('/tv', [TvController::class, 'display'])
     ->name('tv.display');
 
+    Route::get('/tv/status', [TvController::class, 'status'])
+    ->name('tv.status');
+
+
 
 // =======================
 // AUTH ROUTES (LOGIN)
